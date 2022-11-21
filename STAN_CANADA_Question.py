@@ -2,7 +2,7 @@
 Question
 
 Stan is looking to provide access to creators' calendars and enable fans to book meetings with them.
-Your assignment is to create an algorythm that will assess creator's calendar and return available slots
+Your assignment is to create an algorithm that will assess the creator's calendar and return available slots
 for fans to book.
 """
 import datetime
@@ -41,7 +41,7 @@ def get_duration_in_minutes(date_1, date_2):
     c = date_2-date_1
     return c.total_seconds()/60
 
-# Interavl is in string, and duration in minutes
+# Interval is in string, and duration in minutes
 def get_chunks_of_interval(interval, duration):
     if get_duration_in_minutes(getEpochTime(interval[0]), getEpochTime(interval[1])) < duration:
         return []
@@ -72,41 +72,28 @@ def fetch_available_slots(duration, events):
     print("All events: ", events)
     l = len(events)
     temp_event = events[0]
-    # print(0, "temp_event: ", temp_event)
     for i in range(0, l):
         # Add the slots from start of day if not starting from 00:00AM
         if i == 0:
             if events[i][0][-7:] != "00:00AM":
-                # print("first....")
                 temp_available_slot = [events[0][0]
                                        [:-7]+"00:00AM", events[0][0]]
-                # print(i, "temp_available_slot", temp_available_slot)
                 if (get_duration_in_minutes(getEpochTime(temp_available_slot[0]), getEpochTime(temp_available_slot[1])) >= duration):
                     available_slots.extend(get_chunks_of_interval(temp_available_slot, duration))
                 temp_event = events[0]
-                # print(i, "temp_event: ", temp_event)
-                # print("available_slots", available_slots, i)
             continue
         # check if the next entry has overlap
         # Complete overlap end_1 > end_2
         if getEpochTime(temp_event[1]) >= getEpochTime(events[i][1]):
-            # print("third....", temp_event, events[i])
-            # print("available_slots", available_slots, i)
             continue
         # partial overlap end_1>start_1 and end_1<end_2
         elif getEpochTime(temp_event[1]) >= getEpochTime(events[i][0]) and getEpochTime(temp_event[1]) <= getEpochTime(events[i][0]):
-            # print("fourth....", temp_event, events[i])
             temp_event = [temp_event[0], events[i][1]]
-            # print(i, "temp_event: ", temp_event)
-            # print("available_slots", available_slots, i)
         # if not overlapping then get the interval end_1-start_1
         else:
-            # print("fifth....", temp_event, events[i])
             temp_available_slot = [temp_event[1], events[i][0]]
-            # print(i, "temp_available_slot", temp_available_slot)
             if (get_duration_in_minutes(getEpochTime(temp_available_slot[0]), getEpochTime(temp_available_slot[1])) >= duration):
                 available_slots.extend(get_chunks_of_interval(temp_available_slot,duration))
-            # print("available_slots", available_slots, i)
             temp_event = events[i]
     
     if temp_event[1][-7:] != "00:00AM":
