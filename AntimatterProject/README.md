@@ -111,6 +111,3 @@ Antimatter
 
 ## Testing
 * run `$python -m unittest test`
-
-## Steps for making it a tool
-* chmod +x myecho.py
