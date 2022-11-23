@@ -1,11 +1,18 @@
 class Entity:
     def __init__(self, path="", type="", hash="", readable=True, link=""):
         self._path = path
-        self._type = type  # "folder" / "file"
+        self._type = type  # "folder" / "file" / "symlink"
         self._hash = hash  # if file then it has hash
         self._readable = readable # for files and folder
+        self._special = False
         self._link = path if link == "" else link
+    @property
+    def special(self):
+        return self._special
 
+    @special.setter
+    def special(self, special):
+        self._special = special
     @property
     def path(self):
         return self._path
